@@ -9,6 +9,7 @@ public class Theatre {
         rows.add(new int[12]);
         rows.add(new int[16]);
         rows.add(new int[20]);
+
         System.out.println("Welcome to the new theatre");
         mainMenu();
     }
@@ -160,13 +161,14 @@ public class Theatre {
         rows.get(rowNum - 1)[seatNum - 1] = 0;
     }
     public static void showAvailable() {
-        for (int i = 0; i < 3; i++) {
-            System.out.print("Seats available in row " + (i+1) + ": ");
-            for (int j = 0; j < rows.get(i).length; j++) {
-                if (rows.get(i)[j] == 0) {
-                    System.out.print((j+1) + ", ");
+        for (int row = 0; row < 3; row++) {
+            System.out.print("Seats available in row " + (row+1) + ": ");
+            for (int seat = 0; seat < rows.get(row).length; seat++) {
+                if (rows.get(row)[seat] == 0) {
+                    System.out.print((seat+1) + ", ");
                 }
             }
+
             System.out.println();
         }
     }
