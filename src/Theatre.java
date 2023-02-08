@@ -209,10 +209,10 @@ public class Theatre {
     }
 
     public static void sortTickets() {
-        for (int i = 0; i < ticketList.size(); i++) {
-            for (int j = i; j < ticketList.size(); j++) {
-                if (ticketList.get(j).price < ticketList.get(i).price) {
-                    swapTicketInfo(ticketList.get(j), ticketList.get(i));
+        for (int row = 0; row < ticketList.size(); row++) {
+            for (int seat = row; seat < ticketList.size(); seat++) {
+                if (ticketList.get(seat).price < ticketList.get(row).price) {
+                    swapTicketInfo(ticketList.get(seat), ticketList.get(row));
                 }
             }
         }
