@@ -11,7 +11,7 @@ public class Ticket {
         person = newPerson;
     }
 
-    public void printDetails() {
+    public void print() {
         System.out.println("name: " + person.name + " " + person.surname);
         System.out.println("email: " + person.email);
         System.out.println("row: " + row + "    seat: " + seat);
