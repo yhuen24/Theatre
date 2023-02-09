@@ -1,17 +1,11 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class Theatre {
     // creates static global variable that will be used by the functions below
     static ArrayList<Ticket> ticketList = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
-    static int[][] arrayRows = {
-            {0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    static int[][] rows = {new int[12], new int[16], new int[20]};
     public static void main(String[] args) {
         System.out.println("Welcome to the new theatre");
         mainMenu();
@@ -80,44 +74,48 @@ public class Theatre {
         System.out.println("    8) Sort tickets by price");
         System.out.println("    0) Quit");
     }
-
     public static void buy_ticket() {
-        // handles the buy ticket implementation
-        System.out.print("Enter desired row number: ");
-        int rowNum = input.nextInt();
+        try {
+            // handles the buy ticket implementation
+            System.out.print("Enter desired row number: ");
+            int rowNum = input.nextInt();
+            // handles the case in which the desired row is out of bounds
+            if (rowNum > 3 || rowNum < 1) {
+                System.out.println("desired row:" + rowNum + " do not exist");
+                System.out.println("Please try again");
+                mainMenu();
+            }
+            int rowSize = getRowSize(rowNum);
+            System.out.print("Enter desired seat number: ");
+            int seatNum = input.nextInt();
 
-        // handles the case in which the desired row is out of bounds
-        if (rowNum > 3 || rowNum < 1) {
-            System.out.println("desired row:" + rowNum + " do not exist");
-            System.out.println("Please try again");
+            // handles the case in which the desired seat is out of bounds
+            if (seatNum > rowSize || seatNum < 1) {
+                System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " do not exist");
+                System.out.println("Please try again");
+                mainMenu();
+            }
+
+            // handles the case in which the desired seat is taken or occupied
+            if (rows[rowNum - 1][seatNum - 1] != 0) {
+                System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " is already occupied");
+                System.out.println("Please try again");
+                mainMenu();
+            }
+
+            // Ask for user data and puts it in ticket list
+            String[] personInfo = getPersonInfo();
+            Person person = new Person(personInfo[0], personInfo[1], personInfo[2]);
+            System.out.print("Enter ticket price: ");
+            float price = input.nextFloat();
+            Ticket ticket = new Ticket(rowNum,seatNum,price, person);
+            ticketList.add(ticket);
+            rows[rowNum - 1][seatNum - 1] = 1;
+        } catch (Exception e) {
+            System.out.println("Mismatch input try again");
             mainMenu();
         }
-        int rowSize = getRowSize(rowNum);
-        System.out.print("Enter desired seat number: ");
-        int seatNum = input.nextInt();
 
-        // handles the case in which the desired seat is out of bounds
-        if (seatNum > rowSize || seatNum < 1) {
-            System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " do not exist");
-            System.out.println("Please try again");
-            mainMenu();
-        }
-
-        // handles the case in which the desired seat is taken or occupied
-        if (arrayRows[rowNum - 1][seatNum - 1] != 0) {
-            System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " is already occupied");
-            System.out.println("Please try again");
-            mainMenu();
-        }
-
-        // Ask for user data and puts it in ticket list
-        String[] personInfo = getPersonInfo();
-        Person person = new Person(personInfo[0], personInfo[1], personInfo[2]);
-        System.out.print("Enter ticket price: ");
-        float price = input.nextFloat();
-        Ticket ticket = new Ticket(rowNum,seatNum,price, person);
-        ticketList.add(ticket);
-        arrayRows[rowNum - 1][seatNum - 1] = 1;
     }
 
     public static String[] getPersonInfo() {
@@ -147,7 +145,7 @@ public class Theatre {
         System.out.println("    *   STAGE   *");
         System.out.println("    *************");
         String space = " ";
-        for (int[] row : arrayRows) {
+        for (int[] row : rows) {
             String rowSpace = space.repeat((20 - row.length) / 2);
             System.out.print(rowSpace);
             int midPart = 0;
@@ -182,12 +180,12 @@ public class Theatre {
             System.out.println("Please try again");
             mainMenu();
         }
-        if (arrayRows[rowNum - 1][seatNum - 1] == 0) {
+        if (rows[rowNum - 1][seatNum - 1] == 0) {
             System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " is not occupied");
             System.out.println("Please try again");
             mainMenu();
         }
-        arrayRows[rowNum - 1][seatNum - 1] = 0;
+        rows[rowNum - 1][seatNum - 1] = 0;
         // loops through ticketList and check the desired ticket to be cancelled
         for (int i = 0; i < ticketList.size(); i++) {
             if (ticketList.get(i).seat == seatNum && ticketList.get(i).row == rowNum) {
@@ -201,9 +199,9 @@ public class Theatre {
         // shows all available seats
         for (int row = 0; row < 3; row++) {
             System.out.print("Seats available in row " + (row+1) + ": ");
-            for (int seat = 0; seat < arrayRows[row].length; seat++) {
-                if (arrayRows[row][seat] == 0) {
-                    System.out.print((seat+1) + ", ");
+            for (int seat = 0; seat < Theatre.rows[row].length; seat++) {
+                if (Theatre.rows[row][seat] == 0) {
+                    System.out.print((seat+1) + " ");
                 }
             }
 
@@ -269,7 +267,7 @@ public class Theatre {
         // writes the rows info to a text file called "theatre.txt"
         try {
             FileWriter writer = new FileWriter("theatre.txt");
-            for (int[] row : arrayRows) {
+            for (int[] row : rows) {
                 writer.write(Arrays.toString(row) + "\n");
             }
             writer.close();
@@ -287,7 +285,7 @@ public class Theatre {
                 String line = fileScanner.nextLine();
                 String[] numbers = line.substring(1, line.length() - 1).split(", ");
                 for (int i = 0; i < numbers.length; i++) {
-                    arrayRows[rowCounter][i] =  Integer.parseInt(numbers[i]);
+                    rows[rowCounter][i] =  Integer.parseInt(numbers[i]);
                 }
                 rowCounter++;
             }
