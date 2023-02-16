@@ -264,7 +264,6 @@ public class Theatre {
         try {
             FileWriter writer = new FileWriter("theatre.txt");
             for (int[] row : rows) {
-//                writer.write(Arrays.toString(row) + "\n");
                 for (int seat : row) {
                     writer.write(seat + " ");
                 }
@@ -282,10 +281,10 @@ public class Theatre {
             Scanner fileScanner = new Scanner(new File("theatre.txt"));
             int rowCounter = 0;
             while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine();
-                String[] numbers = line.split(" ");
-                for (int i = 0; i < numbers.length; i++) {
-                    rows[rowCounter][i] =  Integer.parseInt(numbers[i]);
+                String row = fileScanner.nextLine();
+                String[] seats = row.split(" ");
+                for (int i = 0; i < seats.length; i++) {
+                    rows[rowCounter][i] =  Integer.parseInt(seats[i]);
                 }
                 rowCounter++;
             }
