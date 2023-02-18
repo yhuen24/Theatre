@@ -192,16 +192,39 @@ public class Theatre {
 
     public static void show_available() {
         // shows all available seats
+        System.out.println("Available seats per row: ");
+        String space = " ";
+        int repeat = 20;
         for (int row = 0; row < 3; row++) {
-            System.out.print("Seats available in row " + (row+1) + ": ");
-            for (int seat = 0; seat < Theatre.rows[row].length; seat++) {
-                if (Theatre.rows[row][seat] == 0) {
-                    System.out.print((seat+1) + " ");
+            String rowSpace = space.repeat(repeat);
+            System.out.print(rowSpace);
+            for (int seat = 0; seat < rows[row].length; seat++) {
+                if (seat == rows[row].length / 2) {
+                    System.out.print("  ");
+                }
+                if (rows[row][seat] == 0) {
+                    if (seat < 9) {
+                        System.out.print("[ " + (seat+1) + "] ");
+                    } else {
+                        System.out.print("[" + (seat+1) + "] ");
+                    }
+                } else {
+                    System.out.print("[XX] ");
                 }
             }
-
+            repeat -= 10;
             System.out.println();
         }
+//        Alternative printing
+//        for (int row = 0; row < 3; row++) {
+//            System.out.print("Available seats in row " + (row + 1) + ":  ");
+//            for (int seats = 0; seats < rows[row].length; seats++) {
+//                if (rows[row][seats] == 0) {
+//                    System.out.print((seats + 1) + " ");
+//                }
+//            }
+//            System.out.println();
+//        }
     }
 
     public static void show_ticket_info(ArrayList<Ticket> showTicket) {
