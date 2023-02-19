@@ -6,10 +6,12 @@ public class Theatre {
     static ArrayList<Ticket> ticketList = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
     static int[][] rows = {new int[12], new int[16], new int[20]};
+
     public static void main(String[] args) {
         System.out.println("Welcome to the new theatre");
         mainMenu();
     }
+
     public static void mainMenu() {
         Scanner in = new Scanner(System.in);
         printMenu();
@@ -74,28 +76,38 @@ public class Theatre {
         System.out.println("    8) Sort tickets by price");
         System.out.println("    0) Quit");
     }
+
+    public static void rowOutOfRange(int rowNum) {
+        // handles the case in which the input is out of range
+
+        // handles the case in which the desired row is out of bounds
+        if (rowNum > 3 || rowNum < 1) {
+            System.out.println("desired row:" + rowNum + " do not exist");
+            System.out.println("Please try again");
+            mainMenu();
+        }
+
+    }
+
+    public static void seatOutOfRange(int seatNum, int rowSize, int rowNum) {
+        // handles the case in which the desired seat is out of bounds
+        if (seatNum > rowSize || seatNum < 1) {
+            System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " do not exist");
+            System.out.println("Please try again");
+            mainMenu();
+        }
+    }
+
     public static void buy_ticket() {
         try {
             // handles the buy ticket implementation
             System.out.print("Enter desired row number: ");
             int rowNum = input.nextInt();
-            // handles the case in which the desired row is out of bounds
-            if (rowNum > 3 || rowNum < 1) {
-                System.out.println("desired row:" + rowNum + " do not exist");
-                System.out.println("Please try again");
-                mainMenu();
-            }
+            rowOutOfRange(rowNum);
             int rowSize = getRowSize(rowNum);
             System.out.print("Enter desired seat number: ");
             int seatNum = input.nextInt();
-
-            // handles the case in which the desired seat is out of bounds
-            if (seatNum > rowSize || seatNum < 1) {
-                System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " do not exist");
-                System.out.println("Please try again");
-                mainMenu();
-            }
-
+            seatOutOfRange(seatNum, rowSize, rowNum);
             // handles the case in which the desired seat is taken or occupied
             if (rows[rowNum - 1][seatNum - 1] != 0) {
                 System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " is already occupied");
@@ -113,6 +125,7 @@ public class Theatre {
             rows[rowNum - 1][seatNum - 1] = 1;
         } catch (Exception e) {
             System.out.println("Mismatch input try again");
+            input.next(); // consumes the latest input token
             mainMenu();
         }
 
@@ -160,34 +173,33 @@ public class Theatre {
     }
 
     public static void cancel_ticket() {
-        System.out.print("Enter desired row number: ");
-        int rowNum = input.nextInt();
-        if (rowNum > 3 || rowNum < 1) {
-            System.out.println("desired row:" + rowNum + " do not exist");
-            System.out.println("Please try again");
-            mainMenu();
-        }
-        int rowSize = getRowSize(rowNum);
-        System.out.print("Enter desired seat number you want to cancel: ");
-        int seatNum = input.nextInt();
-        if (seatNum > rowSize || seatNum < 1) {
-            System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " do not exist");
-            System.out.println("Please try again");
-            mainMenu();
-        }
-        if (rows[rowNum - 1][seatNum - 1] == 0) {
-            System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " is not occupied");
-            System.out.println("Please try again");
-            mainMenu();
-        }
-        rows[rowNum - 1][seatNum - 1] = 0;
-        // loops through ticketList and check the desired ticket to be cancelled
-        for (int i = 0; i < ticketList.size(); i++) {
-            if (ticketList.get(i).seat == seatNum && ticketList.get(i).row == rowNum) {
-                // removes the ticket into the ticket list
-                ticketList.remove(i);
+        try {
+            System.out.print("Enter row number to be cancelled: ");
+            int rowNum = input.nextInt();
+            rowOutOfRange(rowNum);
+            int rowSize = getRowSize(rowNum);
+            System.out.print("Enter desired seat number you want to cancel: ");
+            int seatNum = input.nextInt();
+            seatOutOfRange(seatNum, rowSize, rowNum);
+            if (rows[rowNum - 1][seatNum - 1] == 0) {
+                System.out.println("desired seat:" + seatNum + " of row:"+ rowNum + " is not occupied");
+                System.out.println("Please try again");
+                mainMenu();
             }
+            rows[rowNum - 1][seatNum - 1] = 0;
+            // loops through ticketList and check the desired ticket to be cancelled
+            for (int i = 0; i < ticketList.size(); i++) {
+                if (ticketList.get(i).seat == seatNum && ticketList.get(i).row == rowNum) {
+                    // removes the ticket into the ticket list
+                    ticketList.remove(i);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Mismatch Input please try again");
+            input.next(); // consumes the latest token
+            mainMenu();
         }
+
     }
 
     public static void show_available() {
@@ -313,8 +325,7 @@ public class Theatre {
             }
             fileScanner.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("File not found");
         }
     }
-    
 }
