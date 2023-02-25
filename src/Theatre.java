@@ -10,7 +10,7 @@ public class Theatre {
     // creates static global variable that will be used by the functions below
     static ArrayList<Ticket> ticketList = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
-    static HashMap<Byte, boolean[]> rows = new HashMap<>();  // row number as key and byte array as value representing seats
+    static HashMap<Byte, byte[]> rows = new HashMap<>();  // row number as key and byte array as value representing seats
 
     public static void main(String[] args) {
         System.out.println("Welcome to the new theatre");
@@ -21,51 +21,51 @@ public class Theatre {
     public static void initializeRows() {
         // instantiate the HashMap (row number as key and integer array as value representing seats)
         // using byte for lower memory usage
-        rows.put((byte) 1, new boolean[12]);
-        rows.put((byte) 2, new boolean[16]);
-        rows.put((byte) 3, new boolean[20]);
+        rows.put((byte) 1, new byte[12]);
+        rows.put((byte) 2, new byte[16]);
+        rows.put((byte) 3, new byte[20]);
     }
 
     public static void mainMenu() {
         Scanner in = new Scanner(System.in);
         printMenu();
         System.out.print("=> ");
-        char menuChoice = in.next().charAt(0); // reads the 1st character as input
+        String menuChoice = in.nextLine();
         // calls the appropriate function depending on user input
         switch (menuChoice) {
-            case '0' -> {
+            case "0" -> {
                 System.out.println("Quitting...");
                 input.close();
             }
-            case '1' -> {
+            case "1" -> {
                 buy_ticket();
                 mainMenu();
             }
-            case '2' -> {
+            case "2" -> {
                 print_seating_area();
                 mainMenu();
             }
-            case '3' -> {
+            case "3" -> {
                 cancel_ticket();
                 mainMenu();
             }
-            case '4' -> {
+            case "4" -> {
                 show_available();
                 mainMenu();
             }
-            case '5' -> {
+            case "5" -> {
                 save();
                 mainMenu();
             }
-            case '6' -> {
+            case "6" -> {
                 load();
                 mainMenu();
             }
-            case '7' -> {
+            case "7" -> {
                 show_ticket_info(ticketList);
                 mainMenu();
             }
-            case '8' -> {
+            case "8" -> {
                 sort_tickets();
                 mainMenu();
             }
@@ -103,7 +103,7 @@ public class Theatre {
 
     public static boolean isOccupied(byte rowNum, byte seatNum) {
         // If the value given at rowNum and seatNum is 1 then it is occupied
-        return rows.get(rowNum)[seatNum - 1];
+        return rows.get(rowNum)[seatNum - 1] == 1;
     }
 
     public static float getTicketPrice() {
@@ -155,7 +155,7 @@ public class Theatre {
             }
             addTicket(rowNum, seatNum);
             System.out.println("Bought ticket for row:" + rowNum + " seat:" +seatNum);
-            rows.get(rowNum)[seatNum - 1] = true; // set the value into true to signify that it is now occupied
+            rows.get(rowNum)[seatNum - 1] = 1; // set the value into 1 to signify that it is now occupied
         } catch (Exception e) {
             // Handles invalid input such as MisMatch Exception
             System.out.println("Invalid input, try again");
@@ -185,7 +185,7 @@ public class Theatre {
                 if (midPart == rows.get(row).length / 2) {
                     System.out.print(" ");
                 }
-                if (!rows.get(row)[seat]) { // checks if the value in the (row)[seat] is false
+                if (rows.get(row)[seat] == 0) {
                     System.out.print("O");
                 } else {
                     System.out.print("X");
@@ -214,7 +214,7 @@ public class Theatre {
                 return;
             }
             removeTicket(rowNum, seatNum);
-            rows.get(rowNum)[seatNum - 1] = false;  // set the value into false to signify that it is now empty
+            rows.get(rowNum)[seatNum - 1] = 0;  // set the value into false to signify that it is now empty
             System.out.println("Cancelled ticket for row:" + rowNum + " seat:" +seatNum);
         } catch (Exception e) {
             // Handles invalid input such as MisMatch Exception
@@ -236,7 +236,7 @@ public class Theatre {
             StringBuilder rowString = new StringBuilder();  // will append seat number to this string if appropriate
             System.out.print("Available seats in row " + (row) + ":  ");
             for (byte seats = 0; seats < rows.get(row).length; seats++) {
-                if (!rows.get(row)[seats]) {  // append the seat number when it is not occupied
+                if (rows.get(row)[seats] == 0) {  // append the seat number when it is not occupied
                     rowString.append(seats + 1).append(", ");  // appends comma after seat number for better formatting
                 }
             }
@@ -324,7 +324,7 @@ public class Theatre {
                 String row = fileScanner.nextLine();
                 String[] seats = row.split(" ");
                 for (byte i = 0; i < seats.length; i++) {
-                    rows.get(rowCounter)[i] = Boolean.parseBoolean(seats[i]);
+                    rows.get(rowCounter)[i] = Byte.parseByte(seats[i]);
                 }
                 rowCounter++;
             }
