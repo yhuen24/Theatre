@@ -172,7 +172,7 @@ public class Theatre {
         System.out.println("     *  STAGE  *");
         System.out.println("     ***********");
         String space = " ";
-        for (int row = 1; row < 4; row++) {
+        for (int row = 1; row <= 3; row++) {
             String rowSpace = space.repeat((20 - rows.get(row).length) / 2); // responsible for handling spaces in before the array
             System.out.print(rowSpace);
             int midPart = 0; // responsible for middle part space in the format
@@ -232,7 +232,7 @@ public class Theatre {
             System.out.print("Available seats in row " + (row) + ":  ");
             for (int seats = 0; seats < rows.get(row).length; seats++) {
                 if (rows.get(row)[seats] == 0) {  // append the seat number when it is not occupied
-                    rowString.append(seats + 1).append(", ");  // appends comma after seat number for good format
+                    rowString.append(seats + 1).append(", ");  // appends comma after seat number for better formatting
                 }
             }
             String formatString = rowString.substring(0, rowString.length() - 2); // formatting for removing the comma at the end
