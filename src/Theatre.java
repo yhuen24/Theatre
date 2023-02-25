@@ -26,12 +26,11 @@ public class Theatre {
         printMenu();
         System.out.print("=> ");
         String menuChoice = in.nextLine();
-        // handles the case for user input choices
+        // calls the appropriate function depending on user input
         switch (menuChoice) {
             case "0" -> {
                 System.out.println("Quitting...");
                 input.close();
-                System.exit(0);
             }
             case "1" -> {
                 buy_ticket();
@@ -87,13 +86,13 @@ public class Theatre {
     }
 
     public static boolean isRowOutOfBounds(int rowNum) {
-        // if rowNum is not in the key collection, then I know that rowNum is out of bounds
+        // if rowNum is not in the key collection, then rowNum is out of bounds
         // shorter way of checking if rowNum is less than 1 or greater than 3
         return (!rows.containsKey(rowNum));
     }
 
     public static boolean isSeatOutOfBounds(int rowNum, int seatNum) {
-        // if seatNum is greater than the designated length of rowNum or less than 1, then I know that seatNum is out of bounds
+        // if seatNum is greater than the designated length of rowNum or less than 1, then seatNum is out of bounds
         return (seatNum > rows.get(rowNum).length || seatNum < 1);
     }
 
@@ -103,25 +102,22 @@ public class Theatre {
     }
 
     public static float getTicketPrice() {
-        // gets user input and return it as float
         System.out.print("Enter ticket price: ");
         return Float.parseFloat(input.nextLine());
     }
 
     public static HashMap<String, String> getPersonInfo() {
-        // gets user input and return it as HashMap of String key and String Value
         HashMap<String, String> personInfoMap = new HashMap<>();
         System.out.print("Enter your name: ");
-        String name = input.next();
+        String name = input.nextLine();
         System.out.print("Enter your surname: ");
-        String surname = input.next();
+        String surname = input.nextLine();
         System.out.print("Enter your email: ");
-        String email = input.next();
-
+        String email = input.nextLine();
+        // maps the appropriate key to the received user inputs
         personInfoMap.put("name", name);
         personInfoMap.put("surname", surname);
         personInfoMap.put("email", email);
-        input.nextLine(); // consumes the extra token input
         return personInfoMap;
     }
 
@@ -138,21 +134,22 @@ public class Theatre {
     public static void buy_ticket() {
         try {
             int rowNum = getRowInput();
-            if (isRowOutOfBounds(rowNum)) { // check if row is out of bounds
+            if (isRowOutOfBounds(rowNum)) { // exit the function when row is out of bounds
                 System.out.println("Invalid Row input, please try again");
                 return;
             }
             int seatNum = getSeatInput();
-            if (isSeatOutOfBounds(rowNum, seatNum)) { // check if seat is out of bounds
+            if (isSeatOutOfBounds(rowNum, seatNum)) { // exit the function when seat is out of bounds
                 System.out.println("Invalid Seat input, please try again");
                 return;
             }
-            if (isOccupied(rowNum, seatNum)) { // checks if it is occupied
+            if (isOccupied(rowNum, seatNum)) { // exit the function when seat is occupied
                 System.out.println("Seat number:" + seatNum + " at row:" + rowNum + " is already occupied");
                 System.out.println("Try another seat");
                 return;
             }
             addTicket(rowNum, seatNum);
+            System.out.println("Bought ticket for row:" + rowNum + " seat:" +seatNum);
             rows.get(rowNum)[seatNum - 1] = 1; // set the value to 1 to signify that it is now occupied
         } catch (Exception e) {
             // Handles invalid input such as MisMatch Exception
@@ -197,22 +194,23 @@ public class Theatre {
     public static void cancel_ticket() {
         try {
             int rowNum = getRowInput();
-            if (isRowOutOfBounds(rowNum)) { // check if row is out of bounds
+            if (isRowOutOfBounds(rowNum)) { // exit the function when row is out of bounds
                 System.out.println("Invalid Row input, please try again");
                 return;
             }
             int seatNum = getSeatInput();
-            if (isSeatOutOfBounds(rowNum, seatNum)) { // check if seat is out of bounds
+            if (isSeatOutOfBounds(rowNum, seatNum)) { // exit the function when seat is out of bounds
                 System.out.println("Invalid Seat input, please try again");
                 return;
             }
-            if (!isOccupied(rowNum, seatNum)) { // check if the seat is not occupied
+            if (!isOccupied(rowNum, seatNum)) { // exit the function when seat is not occupied
                 System.out.println("Seat number:" + seatNum + " at row:" + rowNum + " is not occupied");
                 System.out.println("Cannot cancel an empty seat, try another seat");
                 return;
             }
             removeTicket(rowNum, seatNum);
             rows.get(rowNum)[seatNum - 1] = 0;  // set the value to 0 to signify that it is now empty
+            System.out.println("Cancelled ticket for row:" + rowNum + " seat:" +seatNum);
         } catch (Exception e) {
             // Handles invalid input such as MisMatch Exception
             System.out.println("Invalid input, try again");
@@ -230,44 +228,46 @@ public class Theatre {
 
     public static void show_available() {
         for (int row = 1; row <= 3; row++) {
-            String rowString = "";
+            StringBuilder rowString = new StringBuilder();  // will append seat number to this string if appropriate
             System.out.print("Available seats in row " + (row) + ":  ");
             for (int seats = 0; seats < rows.get(row).length; seats++) {
-                if (rows.get(row)[seats] == 0) {
-                    rowString += (seats + 1) + ", ";
+                if (rows.get(row)[seats] == 0) {  // append the seat number when it is not occupied
+                    rowString.append(seats + 1).append(", ");  // appends comma after seat number for good format
                 }
             }
-            String formatString = rowString.substring(0, rowString.length() - 2); // effectively remove the comma at the end
-            System.out.println(formatString);
+            String formatString = rowString.substring(0, rowString.length() - 2); // formatting for removing the comma at the end
+            System.out.println(formatString);  // will print formatted version of the available seats
         }
     }
 
     public static void show_ticket_info(ArrayList<Ticket> showTicket) {
-        float totalPrice = 0f;
+        float totalPrice = 0f; // value will get incremented by price of each ticket
         // loops through ticket list and prints its details plus total price at the end
         for (Ticket ticket : showTicket) {
             totalPrice += ticket.price;
             ticket.print();
             System.out.println();
         }
-        if (totalPrice > 0) {
+        if (totalPrice > 0) { // will only print the total price if user bought a ticket
             System.out.println("Total price: " + totalPrice);
         }
     }
 
     public static void sort_tickets() {
         // sort the ticket list by price in ascending order
-        for (int i = 0; i < ticketList.size(); i++) {
-            for (int j = i; j < ticketList.size(); j++) {
+        // using 2 pointer (left and right) to swap values around if element at index right is smaller than element at index left
+        // when (i) for loop is done the ticketList will naturally be sorted due to repeatedly swapping
+        for (int i = 0; i < ticketList.size(); i++) {  // moves the left pointer
+            for (int j = i; j < ticketList.size(); j++) { // moves the right pointer
                 if (ticketList.get(j).price < ticketList.get(i).price) {
-                    swapTicketInfo(ticketList.get(j), ticketList.get(i));
+                    swapTicketInfo(ticketList.get(j), ticketList.get(i));  // swaps the ticket information
                 }
             }
         }
     }
 
     public static void swapTicketInfo(Ticket ticketA, Ticket ticketB) {
-        // effectively swaps the info of one ticket to another
+        // effectively swaps the info of one ticket to another ticket using temporary variable
         float tempPrice = ticketA.price;
         ticketA.price = ticketB.price;
         ticketB.price = tempPrice;
@@ -301,7 +301,7 @@ public class Theatre {
                 for (int seat = 0; seat < rows.get(row).length; seat++) {
                     writer.write(rows.get(row)[seat] + " ");
                 }
-                writer.write("\n");
+                writer.write("\n");  // adds new line after each row so that it won't print in one line
             }
             writer.close();
         } catch (IOException e) {
@@ -314,7 +314,7 @@ public class Theatre {
         // read the info inside the text file called "theatre.txt"
         try {
             Scanner fileScanner = new Scanner(new File("theatre.txt"));
-            int rowCounter = 1;
+            int rowCounter = 1;  // will track which row is being scanned
             while (fileScanner.hasNextLine()) {
                 String row = fileScanner.nextLine();
                 String[] seats = row.split(" ");
