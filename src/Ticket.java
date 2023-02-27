@@ -1,10 +1,10 @@
 public class Ticket {
-    int row;
-    int seat;
-    float price;
-    Person person;
+    private byte row;
+    private byte seat;
+    private float price;
+    private Person person;
 
-    public Ticket(int newRow, int newSeat, float newPrice, Person newPerson) {
+    public Ticket(byte newRow, byte newSeat, float newPrice, Person newPerson) {
         row = newRow;
         seat = newSeat;
         price = newPrice;
@@ -12,9 +12,37 @@ public class Ticket {
     }
 
     public void print() {
-        System.out.println("name: " + person.name + " " + person.surname);
-        System.out.println("email: " + person.email);
+        System.out.println("name: " + person.getName() + " " + person.getSurname());
+        System.out.println("email: " + person.getEmail());
         System.out.println("row: " + row + "    seat: " + seat);
-        System.out.println("price: " + price);
+        System.out.println("price: £" + price);
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public byte getSeat() {
+        return seat;
+    }
+
+    public byte getRow() {
+        return row;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setRow(byte newRow) {
+        row = newRow;
+    }
+
+    public void setSeat(byte newSeat) {
+        seat = newSeat;
+    }
+
+    public void setPrice(float newPrice) {
+        price = newPrice;
     }
 }

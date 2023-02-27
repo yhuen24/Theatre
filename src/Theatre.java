@@ -1,8 +1,10 @@
+import javax.security.auth.kerberos.KerberosTicket;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -106,6 +108,24 @@ public class Theatre {
         return rows.get(rowNum)[seatNum - 1] == 1;
     }
 
+    public static void addTicket(byte rowNum, byte seatNum) {
+        HashMap<String, String> personInfoMap = getPersonInfo();
+        // instantiate a new person class with given info from personInfoMap
+        Person person = new Person(personInfoMap.get("name"), personInfoMap.get("surname"), personInfoMap.get("email"));
+        float ticketPrice = getTicketPrice();
+        Ticket ticket = new Ticket(rowNum, seatNum, ticketPrice, person);
+        ticketList.add(ticket);
+    }
+
+    public static void removeTicket(byte rowNum, byte seatNum) {
+        // loops through the ticketList to find the desired ticket to be cancelled
+        for (int i = 0; i < ticketList.size(); i++) {
+            if (ticketList.get(i).getRow() == rowNum && ticketList.get(i).getSeat() == seatNum) {
+                ticketList.remove(i);  // effectively remove the ticket to the ticketList
+            }
+        }
+    }
+
     public static float getTicketPrice() {
         System.out.print("Enter ticket price: ");
         return Float.parseFloat(input.nextLine());
@@ -127,12 +147,12 @@ public class Theatre {
     }
 
     public static byte getRowInput() {
-        System.out.print("Enter row number: ");
+        System.out.print("Row: ");
         return Byte.parseByte(input.nextLine());
     }
 
     public static byte getSeatInput() {
-        System.out.print("Enter seat number: ");
+        System.out.print("Seat: ");
         return Byte.parseByte(input.nextLine());
     }
 
@@ -160,15 +180,6 @@ public class Theatre {
             // Handles invalid input such as MisMatch Exception
             System.out.println("Invalid input, try again");
         }
-    }
-
-    public static void addTicket(byte rowNum, byte seatNum) {
-        HashMap<String, String> personInfoMap = getPersonInfo();
-        // instantiate a new person class with given info from personInfoMap
-        Person person = new Person(personInfoMap.get("name"), personInfoMap.get("surname"), personInfoMap.get("email"));
-        float ticketPrice = getTicketPrice();
-        Ticket ticket = new Ticket(rowNum, seatNum, ticketPrice, person);
-        ticketList.add(ticket);
     }
 
     public static void print_seating_area() {
@@ -222,15 +233,6 @@ public class Theatre {
         }
     }
 
-    public static void removeTicket(byte rowNum, byte seatNum) {
-        // loops through the ticketList to find the desired ticket to be cancelled
-        for (int i = 0; i < ticketList.size(); i++) {
-            if (ticketList.get(i).row == rowNum && ticketList.get(i).seat == seatNum) {
-                ticketList.remove(i);  // effectively remove the ticket to the ticketList
-            }
-        }
-    }
-
     public static void show_available() {
         for (byte row = 1; row <= 3; row++) {
             StringBuilder rowString = new StringBuilder();  // will append seat number to this string if appropriate
@@ -249,7 +251,7 @@ public class Theatre {
         float totalPrice = 0f; // value will get incremented by price of each ticket
         // loops through ticket list and prints its details plus total price at the end
         for (Ticket ticket : showTicket) {
-            totalPrice += ticket.price;
+            totalPrice += ticket.getPrice();
             ticket.print();
             System.out.println();
         }
@@ -262,40 +264,53 @@ public class Theatre {
         // sort the ticket list by price in ascending order
         // using 2 pointer (left and right) to swap values around if element at index right is smaller than element at index left
         // when (i) for loop is done the ticketList will naturally be sorted due to repeatedly swapping
-        for (byte i = 0; i < ticketList.size(); i++) {  // moves the left pointer
-            for (byte j = i; j < ticketList.size(); j++) { // moves the right pointer
-                if (ticketList.get(j).price < ticketList.get(i).price) {
-                    swapTicketInfo(ticketList.get(j), ticketList.get(i));  // swaps the ticket information
+        ArrayList<Ticket> sortedCopy = copyTicketList(ticketList);
+        for (byte i = 0; i < sortedCopy.size(); i++) {  // moves the left pointer
+            for (byte j = i; j < sortedCopy.size(); j++) { // moves the right pointer
+                if (sortedCopy.get(j).getPrice() < sortedCopy.get(i).getPrice()) {
+                    swapTicketInfo(sortedCopy.get(j), sortedCopy.get(i));  // swaps the ticket information
                 }
             }
         }
+        show_ticket_info(sortedCopy);
     }
 
     public static void swapTicketInfo(Ticket ticketA, Ticket ticketB) {
         // effectively swaps the info of one ticket to another ticket using temporary variable
-        float tempPrice = ticketA.price;
-        ticketA.price = ticketB.price;
-        ticketB.price = tempPrice;
+        float tempPrice = ticketA.getPrice();
+        ticketA.setPrice(ticketB.getPrice());
+        ticketB.setPrice(tempPrice);
 
-        int tempRow = ticketA.row;
-        ticketA.row = ticketB.row;
-        ticketB.row = tempRow;
+        byte tempRow = ticketA.getRow();
+        ticketA.setRow(ticketB.getRow());
+        ticketB.setRow(tempRow);
 
-        int tempSeat = ticketA.seat;
-        ticketA.seat = ticketB.seat;
-        ticketB.seat = tempSeat;
+        byte tempSeat = ticketA.getSeat();
+        ticketA.setSeat(ticketB.getSeat());
+        ticketB.setSeat(tempSeat);
 
-        String tempName = ticketA.person.name;
-        ticketA.person.name = ticketB.person.name;
-        ticketB.person.name = tempName;
+        String tempName = ticketA.getPerson().getName();
+        ticketA.getPerson().setName(ticketB.getPerson().getName());
+        ticketB.getPerson().setName(tempName);
 
-        String tempSurname = ticketA.person.surname;
-        ticketA.person.surname = ticketB.person.surname;
-        ticketB.person.surname = tempSurname;
+        String tempSurname = ticketA.getPerson().getSurname();
+        ticketA.getPerson().setSurname(ticketB.getPerson().getSurname());
+        ticketB.getPerson().setSurname(tempSurname);
 
-        String tempEmail = ticketA.person.email;
-        ticketA.person.email = ticketB.person.email;
-        ticketB.person.email = tempEmail;
+        String tempEmail = ticketA.getPerson().getEmail();
+        ticketA.getPerson().setEmail(ticketB.getPerson().getEmail());
+        ticketB.getPerson().setEmail(tempEmail);
+    }
+
+    public static ArrayList<Ticket> copyTicketList(ArrayList<Ticket> ticketList) {
+        ArrayList<Ticket> copyList = new ArrayList<>();
+        for (Ticket ticket : ticketList) {
+            // makes a deep copy of the original ticket list
+            Person copyPerson = new Person(ticket.getPerson().getName(), ticket.getPerson().getSurname(), ticket.getPerson().getEmail());
+            Ticket copyTicket = new Ticket(ticket.getRow(), ticket.getSeat(), ticket.getPrice(), copyPerson);
+            copyList.add(copyTicket);
+        }
+        return copyList;
     }
 
     public static void save() {
