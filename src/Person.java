@@ -13,13 +13,9 @@ public class Person {
         return name;
     }
 
-    public String getSurname() {
-        return surname;
-    }
+    public String getSurname() { return surname; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
 
     public void setName(String newName) {
         name = newName;
