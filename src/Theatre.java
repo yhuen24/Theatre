@@ -38,19 +38,19 @@ public class Theatre {
                 input.close();
             }
             case "1" -> {
-                buy_ticket();
+                buyTicket();
                 mainMenu();
             }
             case "2" -> {
-                print_seating_area();
+                printSeatingArea();
                 mainMenu();
             }
             case "3" -> {
-                cancel_ticket();
+                cancelTicket();
                 mainMenu();
             }
             case "4" -> {
-                show_available();
+                showAvailable();
                 mainMenu();
             }
             case "5" -> {
@@ -62,11 +62,11 @@ public class Theatre {
                 mainMenu();
             }
             case "7" -> {
-                show_ticket_info(ticketList);
+                showTicketInfo(ticketList);
                 mainMenu();
             }
             case "8" -> {
-                sort_tickets();
+                sortTickets();
                 mainMenu();
             }
             default -> {
@@ -154,7 +154,8 @@ public class Theatre {
         return Byte.parseByte(input.nextLine());
     }
 
-    public static void buy_ticket() {
+    // alt: buy_ticket()
+    public static void buyTicket() {
         try {
             byte rowNum = getRowInput();
             if (isRowOutOfBounds(rowNum)) { // exit the function when row is out of bounds
@@ -180,7 +181,8 @@ public class Theatre {
         }
     }
 
-    public static void print_seating_area() {
+    // alt: print_seating_area()
+    public static void printSeatingArea() {
         // prints the stage plan and seat plan with some formatting
         System.out.println("\n     ***********");
         System.out.println("     *  STAGE  *");
@@ -205,7 +207,8 @@ public class Theatre {
         }
     }
 
-    public static void cancel_ticket() {
+    // alt: cancel_ticket()
+    public static void cancelTicket() {
         try {
             byte rowNum = getRowInput();
             if (isRowOutOfBounds(rowNum)) { // exit the function when row is out of bounds
@@ -231,7 +234,8 @@ public class Theatre {
         }
     }
 
-    public static void show_available() {
+    // alt: show_available()
+    public static void showAvailable() {
         for (byte row = 1; row <= 3; row++) {
             StringBuilder rowString = new StringBuilder();  // will append seat number to this string if appropriate
             System.out.print("Available seats in row " + (row) + ":  ");
@@ -245,7 +249,8 @@ public class Theatre {
         }
     }
 
-    public static void show_ticket_info(ArrayList<Ticket> showTicket) {
+    // alt: show_ticket_info()
+    public static void showTicketInfo(ArrayList<Ticket> showTicket) {
         float totalPrice = 0f; // value will get incremented by price of each ticket
         // loops through ticket list and prints its details plus total price at the end
         for (Ticket ticket : showTicket) {
@@ -258,7 +263,8 @@ public class Theatre {
         }
     }
 
-    public static void sort_tickets() {
+    // alt: sort_tickets()
+    public static void sortTickets() {
         // sort the ticket list by price in ascending order
         // using 2 pointer (left and right) to swap values around if element at index right is smaller than element at index left
         // when (i) for loop is done the ticketList will naturally be sorted due to repeatedly swapping
@@ -270,7 +276,7 @@ public class Theatre {
                 }
             }
         }
-        show_ticket_info(sortedCopy);
+        showTicketInfo(sortedCopy);
     }
 
     public static void swapTicketInfo(Ticket ticketA, Ticket ticketB) {
