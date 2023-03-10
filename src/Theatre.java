@@ -77,7 +77,6 @@ public class Theatre {
     }
 
     public static void printMenu() {
-        // Prints the menu with some formatting
         System.out.println("\nPlease select an option:");
         System.out.println("    1) Buy a ticket");
         System.out.println("    2) Print seating area");
