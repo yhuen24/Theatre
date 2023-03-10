@@ -256,8 +256,10 @@ public class Theatre {
             ticket.print();
             System.out.println();
         }
-        if (totalPrice > 0) { // will only print the total price if user bought a ticket
-            System.out.println("Total price: " + totalPrice);
+        if (!showTicket.isEmpty()) { // will only print the total price if ticket list is not empty
+            System.out.println("Total price: £" + totalPrice);
+        } else {
+            System.out.println("Ticket List is empty.");
         }
     }
 
