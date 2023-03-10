@@ -106,15 +106,6 @@ public class Theatre {
         return rows.get(rowNum)[seatNum - 1] == 1;
     }
 
-    public static void addTicket(byte rowNum, byte seatNum) {
-        HashMap<String, String> personInfoMap = getPersonInfo();
-        // instantiate a new person class with given info from personInfoMap
-        Person person = new Person(personInfoMap.get("name"), personInfoMap.get("surname"), personInfoMap.get("email"));
-        float ticketPrice = getTicketPrice();
-        Ticket ticket = new Ticket(rowNum, seatNum, ticketPrice, person);
-        ticketList.add(ticket);
-    }
-
     public static void removeTicket(byte rowNum, byte seatNum) {
         // loops through the ticketList to find the desired ticket to be cancelled
         for (int i = 0; i < ticketList.size(); i++) {
@@ -168,11 +159,19 @@ public class Theatre {
                 return;
             }
             if (isOccupied(rowNum, seatNum)) { // exit the function when seat is occupied
-                System.out.println("Seat number:" + seatNum + " at row:" + rowNum + " is already occupied");
-                System.out.println("Try another seat");
+                System.out.println("Seat number:" + seatNum + " at row:" + rowNum + " is already occupied, please try another seat");
                 return;
             }
-            addTicket(rowNum, seatNum);
+            HashMap<String, String> personInfoMap = getPersonInfo();
+            // instantiate a new person class with given info from personInfoMap
+            Person person = new Person(personInfoMap.get("name"), personInfoMap.get("surname"), personInfoMap.get("email"));
+            float ticketPrice = getTicketPrice();
+            if (ticketPrice <= 0 ) { // exit the function when inputted price is less than or equal 0
+                System.out.println("Price should be more than £0, please try again");
+                return;
+            }
+            Ticket ticket = new Ticket(rowNum, seatNum, ticketPrice, person);
+            ticketList.add(ticket);
             System.out.println("Bought ticket for row:" + rowNum + " seat:" +seatNum);
             rows.get(rowNum)[seatNum - 1] = 1; // set the value into 1 to signify that it is now occupied
         } catch (Exception e) {
