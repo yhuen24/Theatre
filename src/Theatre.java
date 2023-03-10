@@ -264,7 +264,7 @@ public class Theatre {
     // alt: sort_tickets()
     public static void sortTickets() {
         // sort the ticket list by price in ascending order
-        // using 2 pointer (left and right) to swap values around if element at index right is smaller than element at index left
+        // using 2 pointer (left(i) and right(j)) to swap values around if element at index right(j) is smaller than element at index left(i)
         // when (i) for loop is done the ticketList will naturally be sorted due to repeatedly swapping
         ArrayList<Ticket> sortedCopy = copyTicketList(ticketList);
         for (byte i = 0; i < sortedCopy.size(); i++) {  // moves the left pointer
