@@ -271,38 +271,14 @@ public class Theatre {
         for (byte i = 0; i < sortedCopy.size(); i++) {  // moves the left pointer
             for (byte j = i; j < sortedCopy.size(); j++) { // moves the right pointer
                 if (sortedCopy.get(j).getPrice() < sortedCopy.get(i).getPrice()) {
-                    swapTicketInfo(sortedCopy.get(j), sortedCopy.get(i));  // swaps the ticket information
+                    // Swap objects at index i and j
+                    Ticket temp = sortedCopy.get(i);
+                    sortedCopy.set(i, sortedCopy.get(j));
+                    sortedCopy.set(j, temp);
                 }
             }
         }
         showTicketInfo(sortedCopy);
-    }
-
-    public static void swapTicketInfo(Ticket ticketA, Ticket ticketB) {
-        // effectively swaps the info of one ticket to another ticket using temporary variable
-        float tempPrice = ticketA.getPrice();
-        ticketA.setPrice(ticketB.getPrice());
-        ticketB.setPrice(tempPrice);
-
-        byte tempRow = ticketA.getRow();
-        ticketA.setRow(ticketB.getRow());
-        ticketB.setRow(tempRow);
-
-        byte tempSeat = ticketA.getSeat();
-        ticketA.setSeat(ticketB.getSeat());
-        ticketB.setSeat(tempSeat);
-
-        String tempName = ticketA.getPerson().getName();
-        ticketA.getPerson().setName(ticketB.getPerson().getName());
-        ticketB.getPerson().setName(tempName);
-
-        String tempSurname = ticketA.getPerson().getSurname();
-        ticketA.getPerson().setSurname(ticketB.getPerson().getSurname());
-        ticketB.getPerson().setSurname(tempSurname);
-
-        String tempEmail = ticketA.getPerson().getEmail();
-        ticketA.getPerson().setEmail(ticketB.getPerson().getEmail());
-        ticketB.getPerson().setEmail(tempEmail);
     }
 
     public static ArrayList<Ticket> copyTicketList(ArrayList<Ticket> ticketList) {
@@ -322,9 +298,9 @@ public class Theatre {
             FileWriter writer = new FileWriter("theatre.txt");
             for (byte row = 1; row <= 3; row++) {
                 for (byte seat = 0; seat < rows.get(row).length; seat++) {
-                    writer.write(rows.get(row)[seat] + " ");
+                    writer.write(String.valueOf(rows.get(row)[seat]));
                 }
-                writer.write("\n");  // adds new line after each row so that it won't print in one line
+                writer.write("\n");
             }
             writer.close();
         } catch (IOException e) {
@@ -340,9 +316,8 @@ public class Theatre {
             byte rowCounter = 1;  // will track which row is being scanned
             while (fileScanner.hasNextLine()) {
                 String row = fileScanner.nextLine();
-                String[] seats = row.split(" ");
-                for (byte i = 0; i < seats.length; i++) {
-                    rows.get(rowCounter)[i] = Byte.parseByte(seats[i]);
+                for (byte i = 0; i < row.length(); i++) {
+                    rows.get(rowCounter)[i] = Byte.parseByte(String.valueOf(row.charAt(i)));
                 }
                 rowCounter++;
             }

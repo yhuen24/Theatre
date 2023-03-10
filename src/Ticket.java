@@ -1,14 +1,14 @@
 public class Ticket {
-    private byte row;
-    private byte seat;
-    private float price;
-    private Person person;
+    private final byte row;
+    private final byte seat;
+    private final float price;
+    private final Person person;
 
-    public Ticket(byte newRow, byte newSeat, float newPrice, Person newPerson) {
-        row = newRow;
-        seat = newSeat;
-        price = newPrice;
-        person = newPerson;
+    public Ticket(byte row, byte seat, float price, Person person) {
+        this.row = row;
+        this.seat = seat;
+        this.price = price;
+        this.person = person;
     }
 
     public void print() {
@@ -34,15 +34,4 @@ public class Ticket {
         return person;
     }
 
-    public void setRow(byte newRow) {
-        row = newRow;
-    }
-
-    public void setSeat(byte newSeat) {
-        seat = newSeat;
-    }
-
-    public void setPrice(float newPrice) {
-        price = newPrice;
-    }
 }
