@@ -89,14 +89,14 @@ public class Theatre {
         System.out.println("    0) Quit");
     }
 
-    public static boolean isRowOutOfBounds(byte rowNum) {
-        // if rowNum is not in the key collection, then rowNum is out of bounds
-        // shorter way of checking if rowNum is less than 1 or greater than 3
+    public static boolean isRowNotValid(byte rowNum) {
+        // if rowNum is not in the key collection, then rowNum is not valid
+        // shorter way of checking if rowNum is not within range 1-3
         return (!rows.containsKey(rowNum));
     }
 
-    public static boolean isSeatOutOfBounds(byte rowNum, byte seatNum) {
-        // if seatNum is greater than the designated length of rowNum or less than 1, then seatNum is out of bounds
+    public static boolean isSeatNotValid(byte rowNum, byte seatNum) {
+        // if seatNum is greater than the designated length of rowNum or less than 1, then seatNum not valid
         return (seatNum > rows.get(rowNum).length || seatNum < 1);
     }
 
@@ -148,12 +148,12 @@ public class Theatre {
     public static void buyTicket() {
         try {
             byte rowNum = getRowInput();
-            if (isRowOutOfBounds(rowNum)) { // exit the function when row is out of bounds
+            if (isRowNotValid(rowNum)) { // exit the function when row is out of bounds
                 System.out.println("Invalid Row input, please try again");
                 return;
             }
             byte seatNum = getSeatInput();
-            if (isSeatOutOfBounds(rowNum, seatNum)) { // exit the function when seat is out of bounds
+            if (isSeatNotValid(rowNum, seatNum)) { // exit the function when seat is out of bounds
                 System.out.println("Invalid Seat input, please try again");
                 return;
             }
@@ -209,12 +209,12 @@ public class Theatre {
     public static void cancelTicket() {
         try {
             byte rowNum = getRowInput();
-            if (isRowOutOfBounds(rowNum)) { // exit the function when row is out of bounds
+            if (isRowNotValid(rowNum)) { // exit the function when row is out of bounds
                 System.out.println("Invalid Row input, please try again");
                 return;
             }
             byte seatNum = getSeatInput();
-            if (isSeatOutOfBounds(rowNum, seatNum)) { // exit the function when seat is out of bounds
+            if (isSeatNotValid(rowNum, seatNum)) { // exit the function when seat is out of bounds
                 System.out.println("Invalid Seat input, please try again");
                 return;
             }
@@ -237,13 +237,13 @@ public class Theatre {
         for (byte row = 1; row <= 3; row++) {
             StringBuilder rowString = new StringBuilder();  // will append seat number to this string if appropriate
             System.out.print("Available seats in row " + (row) + ":  ");
-            for (byte seats = 0; seats < rows.get(row).length; seats++) {
-                if (rows.get(row)[seats] == 0) {  // append the seat number when it is not occupied
-                    rowString.append(seats + 1).append(", ");  // appends comma after seat number for better formatting
+            for (byte seats = 1; seats <= rows.get(row).length; seats++) {
+                if (!isOccupied(row,seats)) {  // append the seat number when it is not occupied
+                    rowString.append(seats).append(", ");
                 }
             }
             String formatString = rowString.substring(0, rowString.length() - 2); // formatting for removing the comma at the end
-            System.out.println(formatString);  // will print formatted version of the available seats
+            System.out.println(formatString);
         }
     }
 
