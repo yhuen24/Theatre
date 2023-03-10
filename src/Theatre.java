@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class Theatre {
-    // creates static global variable that will be used by the functions below
+    // creates static global variable that will be used by the methods below
     static ArrayList<Ticket> ticketList = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
     static HashMap<Byte, byte[]> rows = new HashMap<>();  // row number as key and byte array as value representing seats
