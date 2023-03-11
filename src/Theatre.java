@@ -10,7 +10,7 @@ public class Theatre {
     // creates static global variable that will be used by the methods below
     static ArrayList<Ticket> ticketList = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
-    static HashMap<Byte, byte[]> rows = new HashMap<>();  // row number as key and byte array as value representing seats
+    static HashMap<Byte, byte[]> rows = new HashMap<>();  // row number is key and byte array is value representing seats
 
     public static void main(String[] args) {
         System.out.println("Welcome to the new theatre");
@@ -19,7 +19,7 @@ public class Theatre {
     }
 
     public static void initializeRows() {
-        // instantiate the HashMap (row number as key and integer array as value representing seats)
+        // instantiate the HashMap (row number is key and integer array is value representing seats)
         // using byte for lower memory usage
         rows.put((byte) 1, new byte[12]);
         rows.put((byte) 2, new byte[16]);
