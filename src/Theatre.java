@@ -11,7 +11,6 @@ public class Theatre {
     static ArrayList<Ticket> ticketList = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
     static HashMap<Byte, byte[]> rows = new HashMap<>();  // row number is key and byte array is value representing seats
-
     public static void main(String[] args) {
         System.out.println("Welcome to the new theatre");
         initializeRows();
@@ -109,7 +108,7 @@ public class Theatre {
         // loops through the ticketList to find the desired ticket to be cancelled
         for (int i = 0; i < ticketList.size(); i++) {
             if (ticketList.get(i).getRow() == rowNum && ticketList.get(i).getSeat() == seatNum) {
-                ticketList.remove(i);  // effectively remove the ticket to the ticketList
+                ticketList.remove(i);
             }
         }
     }
@@ -148,24 +147,23 @@ public class Theatre {
     public static void buyTicket() {
         try {
             byte rowNum = getRowInput();
-            if (isRowNotValid(rowNum)) { // exit the function when row is out of bounds
+            if (isRowNotValid(rowNum)) {
                 System.out.println("Invalid Row input, please try again");
                 return;
             }
             byte seatNum = getSeatInput();
-            if (isSeatNotValid(rowNum, seatNum)) { // exit the function when seat is out of bounds
+            if (isSeatNotValid(rowNum, seatNum)) {
                 System.out.println("Invalid Seat input, please try again");
                 return;
             }
-            if (isOccupied(rowNum, seatNum)) { // exit the function when seat is occupied
+            if (isOccupied(rowNum, seatNum)) {
                 System.out.println("Seat number:" + seatNum + " at row:" + rowNum + " is already occupied, please try another seat");
                 return;
             }
             HashMap<String, String> personInfoMap = getPersonInfo();
-            // instantiate a new person class with given info from personInfoMap
             Person person = new Person(personInfoMap.get("name"), personInfoMap.get("surname"), personInfoMap.get("email"));
             float ticketPrice = getTicketPrice();
-            if (ticketPrice <= 0 ) { // exit the function when inputted price is less than or equal 0
+            if (ticketPrice <= 0 ) {
                 System.out.println("Price should be more than £0, please try again");
                 return;
             }
@@ -174,14 +172,12 @@ public class Theatre {
             System.out.println("Bought ticket for row:" + rowNum + " seat:" +seatNum);
             rows.get(rowNum)[seatNum - 1] = 1; // set the value into 1 to signify that it is now occupied
         } catch (Exception e) {
-            // Handles invalid input such as MisMatch Exception
             System.out.println("Invalid input, try again");
         }
     }
 
     // alt: print_seating_area()
     public static void printSeatingArea() {
-        // prints the stage plan and seat plan with some formatting
         System.out.println("\n     ***********");
         System.out.println("     *  STAGE  *");
         System.out.println("     ***********");
@@ -209,25 +205,24 @@ public class Theatre {
     public static void cancelTicket() {
         try {
             byte rowNum = getRowInput();
-            if (isRowNotValid(rowNum)) { // exit the function when row is out of bounds
+            if (isRowNotValid(rowNum)) {
                 System.out.println("Invalid Row input, please try again");
                 return;
             }
             byte seatNum = getSeatInput();
-            if (isSeatNotValid(rowNum, seatNum)) { // exit the function when seat is out of bounds
+            if (isSeatNotValid(rowNum, seatNum)) {
                 System.out.println("Invalid Seat input, please try again");
                 return;
             }
-            if (!isOccupied(rowNum, seatNum)) { // exit the function when seat is not occupied
+            if (!isOccupied(rowNum, seatNum)) {
                 System.out.println("Seat number:" + seatNum + " at row:" + rowNum + " is not occupied");
                 System.out.println("Cannot cancel an empty seat, try another seat");
                 return;
             }
             removeTicket(rowNum, seatNum);
-            rows.get(rowNum)[seatNum - 1] = 0;  // set the value into false to signify that it is now empty
+            rows.get(rowNum)[seatNum - 1] = 0;
             System.out.println("Cancelled ticket for row:" + rowNum + " seat:" +seatNum);
         } catch (Exception e) {
-            // Handles invalid input such as MisMatch Exception
             System.out.println("Invalid input, try again");
         }
     }
@@ -235,7 +230,7 @@ public class Theatre {
     // alt: show_available()
     public static void showAvailable() {
         for (byte row = 1; row <= 3; row++) {
-            StringBuilder rowString = new StringBuilder();  // will append seat number to this string if appropriate
+            StringBuilder rowString = new StringBuilder();
             System.out.print("Available seats in row " + (row) + ":  ");
             for (byte seats = 1; seats <= rows.get(row).length; seats++) {
                 if (!isOccupied(row,seats)) {  // append the seat number when it is not occupied
@@ -243,20 +238,19 @@ public class Theatre {
                 }
             }
             String formatString = rowString.substring(0, rowString.length() - 2); // formatting for removing the comma at the end
-            System.out.println(formatString);
+            System.out.println(formatString + ".");
         }
     }
 
     // alt: show_ticket_info()
     public static void showTicketInfo(ArrayList<Ticket> showTicket) {
-        float totalPrice = 0f; // value will get incremented by price of each ticket
-        // loops through ticket list and prints its details plus total price at the end
-        for (Ticket ticket : showTicket) {
-            totalPrice += ticket.getPrice();
-            ticket.print();
-            System.out.println();
-        }
-        if (!showTicket.isEmpty()) { // will only print the total price if ticket list is not empty
+        float totalPrice = 0f;
+        if (!showTicket.isEmpty()) {
+            for (Ticket ticket : showTicket) {
+                totalPrice += ticket.getPrice();
+                ticket.print();
+                System.out.println();
+            }
             System.out.println("Total price: £" + totalPrice);
         } else {
             System.out.println("Ticket List is empty.");
